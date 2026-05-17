@@ -10915,8 +10915,8 @@ function exportEchPDF(dos) {
     <span>${new Date().toLocaleDateString("fr-FR")} · ${lignes.length} échéances</span>
   </div>
 
-  <button onclick="window.print()" style="position:fixed;bottom:30px;right:30px;background:#102A63;color:white;border:none;border-radius:28px;padding:14px 32px;font-size:15px;font-family:Georgia,serif;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,0.25);z-index:999">\u{1F5A8} Imprimer / PDF</button>
-  <button onclick="window.close()" style="position:fixed;bottom:30px;right:260px;background:#F0F0F0;color:#555;border:none;border-radius:28px;padding:14px 20px;font-size:15px;cursor:pointer;z-index:999">\u2715 Fermer</button>
+  <button onclick="window.print()" class="no-print" style="position:fixed;bottom:30px;right:30px;background:#102A63;color:white;border:none;border-radius:28px;padding:14px 32px;font-size:15px;font-family:Georgia,serif;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,0.25);z-index:999">\u{1F5A8} Imprimer / PDF</button>
+  <button onclick="window.close()" class="no-print" style="position:fixed;bottom:30px;right:260px;background:#F0F0F0;color:#555;border:none;border-radius:28px;padding:14px 20px;font-size:15px;cursor:pointer;z-index:999">\u2715 Fermer</button>
   </body></html>`;
 
   var w = window.open('', '_blank', 'width=1200,height=900');
@@ -12025,7 +12025,7 @@ const RCF_KEY = "taskmanager_rcf_v1";
    EXPORT PDF RCF — utilitaires partagés
 ═══════════════════════════════════════════════════════════ */
 function _rcfPrintIframe(htm) {
-  var htmWithBtn = htm.replace('</body>', '<button onclick="window.print()" style="position:fixed;bottom:30px;right:30px;background:#0E7490;color:white;border:none;border-radius:28px;padding:14px 32px;font-size:15px;font-family:Georgia,serif;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,0.25);z-index:999">🖨 Imprimer / PDF</button><button onclick="window.close()" style="position:fixed;bottom:30px;right:260px;background:#F0F0F0;color:#555;border:none;border-radius:28px;padding:14px 20px;font-size:15px;cursor:pointer;z-index:999">✕ Fermer</button></body>');
+  var htmWithBtn = htm.replace('</body>', '<style>@media print{.no-print{display:none!important}}</style><button onclick="window.print()" class="no-print" style="position:fixed;bottom:30px;right:30px;background:#0E7490;color:white;border:none;border-radius:28px;padding:14px 32px;font-size:15px;font-family:Georgia,serif;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,0.25);z-index:999">🖨 Imprimer / PDF</button><button onclick="window.close()" class="no-print" style="position:fixed;bottom:30px;right:260px;background:#F0F0F0;color:#555;border:none;border-radius:28px;padding:14px 20px;font-size:15px;cursor:pointer;z-index:999">✕ Fermer</button></body>');
   var w = window.open('', '_blank', 'width=1200,height=900');
   if (!w) { alert("Autorisez les popups pour exporter en PDF."); return; }
   w.document.open();
@@ -14574,7 +14574,7 @@ function App() {
         </>}
         {/* Footer version */}
         <div style={{ marginTop: "auto", padding: "14px 18px", borderTop: "1px solid rgba(255,255,255,0.08)", fontSize: 9, fontFamily: "'DM Mono',monospace", color: "rgba(255,255,255,0.25)", lineHeight: 1.6, flexShrink: 0 }}>
-          v.0.540<br />16/05/26 à 10:00
+          v.0.541<br />16/05/26 à 10:00
         </div>
       </div>
 
