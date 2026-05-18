@@ -453,7 +453,7 @@ function CotationForm1779117410({ cotation, onSave, onClose }) {
     if (!base.requestDate) base.requestDate = today0;
     return base;
   });
-  const set = (k,v) => setD(p=>({...p, [k]:v})));
+  const set = (k,v) => setD(p=>({...p, [k]:v}));
   const uidP = () => Math.random().toString(36).substr(2,9);
   const addPmt   = () => setD(p=>({...p,paiements:[...(p.paiements||[]),{id:uidP(),montant:"",effectuePar:"Banque",date:"",nature:""}]}));
   const updPmt   = (id,k,v) => setD(p=>({...p,paiements:(p.paiements||[]).map(r=>r.id===id?{...r,[k]:v}:r)}));
@@ -533,7 +533,7 @@ function CotationForm1779117410({ cotation, onSave, onClose }) {
             const ss=[{id:"todo",name:"À faire",color:"#888",bg:"#F0F0F0"},{id:"inprogress",name:"En cours",color:"#1D4ED8",bg:"#DBEAFE"},{id:"waiting",name:"En attente",color:"#A16207",bg:"#FEF9C3"},{id:"blocked",name:"Bloqué",color:"#B91C1C",bg:"#FEE2E2"},{id:"done",name:"Fait",color:"#065F46",bg:"#D1FAE5"},{id:"cancelled",name:"Annulé",color:"#92400E",bg:"#F5E6DC"}];
             const subtasks=d.subtasks||[];
             const done=subtasks.filter(s=>s.completed).length;
-            const updSubs=subs=>setD(p=>({...p, subtasks:subs})));
+            const updSubs=subs=>setD(p=>({...p, subtasks:subs}));
             const addSub=()=>updSubs([...subtasks,{id:String(Date.now()),text:"",status:"todo",completed:false}]);
             const updSub=s=>updSubs(subtasks.map(x=>x.id===s.id?s:x));
             const delSub=id=>updSubs(subtasks.filter(x=>x.id!==id));
@@ -6609,7 +6609,7 @@ function PaymentModal({ payment, onSave, onClose, settings }) {
           {(()=>{
             const subtasks=d.subtasks||[];
             const done=subtasks.filter(s=>s.completed).length;
-            const updSubs=subs=>setD(p=>({...p, subtasks:subs})));
+            const updSubs=subs=>setD(p=>({...p, subtasks:subs}));
             const addSub=()=>updSubs([...subtasks,{id:String(Date.now()),text:"",status:"todo",completed:false}]);
             const updSub=s=>updSubs(subtasks.map(x=>x.id===s.id?s:x));
             const delSub=id=>updSubs(subtasks.filter(x=>x.id!==id));
@@ -14338,7 +14338,7 @@ function App() {
         </>}
         {/* Footer version */}
         <div style={{ marginTop: "auto", padding: "14px 18px", borderTop: "1px solid rgba(255,255,255,0.08)", fontSize: 9, fontFamily: "'DM Mono',monospace", color: "rgba(255,255,255,0.25)", lineHeight: 1.6, flexShrink: 0 }}>
-          v.0.564{" — "}{new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"})}{" "}{new Date().toLocaleTimeString("fr-FR",{timeZone:"Europe/Paris",hour:"2-digit",minute:"2-digit"})}
+          v.0.565{" — "}{new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"})}{" "}{new Date().toLocaleTimeString("fr-FR",{timeZone:"Europe/Paris",hour:"2-digit",minute:"2-digit"})}
         </div>
       </div>
 
