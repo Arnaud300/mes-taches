@@ -5,6 +5,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
+  <meta name="app-version" content="v547-1779107496"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mes Tâches</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6200,7 +6201,7 @@ function ReportModal({ report, onSave, onClose }) {
         <div style={{background:"linear-gradient(135deg,#102A63 0%,#1a3d8f 100%)",padding:"20px 24px",display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexShrink:0}}>
           <div>
             <div style={{fontSize:10,color:"rgba(255,255,255,0.55)",fontFamily:_FL,letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:4}}>Reporting</div>
-            <div style={{fontSize:18,fontWeight:700,color:"white",fontFamily:_FL}}>{report.id?"Modifier le reporting":"Nouveau reporting"}</div>
+            <div style={{fontSize:18,fontWeight:700,color:"white",fontFamily:_FL}}>{(report&&report.id)?"Modifier le reporting":"Nouveau reporting"}</div>
           </div>
           <button onClick={onClose} style={{background:"rgba(255,255,255,0.15)",border:"none",color:"white",fontSize:20,cursor:"pointer",lineHeight:1,borderRadius:8,padding:"4px 9px"}}>×</button>
         </div>
@@ -6500,7 +6501,7 @@ function ReportingView({ tasks, onEdit, onToggle, onSaveComment, settings }) {
 
       {reportModal !== null && (
         <ReportModal
-          report={Object.keys(reportModal).length > 0 ? reportModal : null}
+          report={reportModal}
           onSave={saveReport}
           onClose={() => setReportModal(null)}
         />
@@ -14463,7 +14464,7 @@ function App() {
         </>}
         {/* Footer version */}
         <div style={{ marginTop: "auto", padding: "14px 18px", borderTop: "1px solid rgba(255,255,255,0.08)", fontSize: 9, fontFamily: "'DM Mono',monospace", color: "rgba(255,255,255,0.25)", lineHeight: 1.6, flexShrink: 0 }}>
-          v.0.547
+          v.0.548
         </div>
       </div>
 
