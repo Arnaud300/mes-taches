@@ -4256,7 +4256,7 @@ function DevTaskModal({ task, devSettings, onSave, onClose }) {
               {(d.labels||[]).map(lbl => {
                 const lObj = devSettings.labels.find(l => l.name===lbl) || { color:"#E67E22",bg:"#FEF9EC" };
                 return <span key={lbl} style={{ fontSize:10,background:lObj.bg,color:lObj.color,borderRadius:20,padding:"2px 8px",fontFamily:_DM,border:`1px solid ${lObj.color}30`,cursor:"pointer" }}
-                  onClick={() => setD(p=>({...p, labels:(d.labels||[]).filter(l=>l!==lbl)})}>🏷 {lbl} ×</span>;
+                  onClick={() => setD(p=>({...p, labels:(d.labels||[]).filter(l=>l!==lbl)}))}>🏷 {lbl} ×</span>;
               })}
               <button ref={labelBtnRef} type="button" onClick={() => setShowLabelPicker(p=>!p)}
                 style={{ border:"1px dashed #FDDCB5",background:"none",borderRadius:20,padding:"2px 8px",fontSize:10,cursor:"pointer",color:"#E67E22",fontFamily:_DM }}>+ Étiquette</button>
@@ -4514,7 +4514,7 @@ function ContentieuxDossierModal({ dossier, cSettings, onSave, onClose }) {
             <div style={{ display:"flex",gap:6,flexWrap:"wrap",alignItems:"center",marginBottom:4 }}>
               {(d.labels||[]).map((lbl,i)=>{ const lObj=cSettings.labels.find(l=>l.name===lbl)||{color:"#C0392B",bg:"#FDEDEC"}; return (
                 <span key={i} style={{ fontSize:10,background:lObj.bg,color:lObj.color,borderRadius:20,padding:"2px 8px",fontFamily:_DM,border:`1px solid ${lObj.color}30`,display:"inline-flex",alignItems:"center",gap:3,cursor:"pointer" }}
-                  onClick={()=>setD(p=>({...p, labels:(d.labels||[]).filter((_,j)=>j!==i)})}>🏷 {lbl} ×</span>
+                  onClick={()=>setD(p=>({...p, labels:(d.labels||[]).filter((_,j)=>j!==i)}))}>🏷 {lbl} ×</span>
               );})}
               <button ref={lpBtnRef} type="button" onClick={()=>setShowLP(p=>!p)}
                 style={{ border:"1px dashed #FCA5A5",background:"none",borderRadius:20,padding:"2px 8px",fontSize:10,cursor:"pointer",color:"#C0392B",fontFamily:_DM }}>+ Étiquette</button>
@@ -4545,7 +4545,7 @@ function ContentieuxDossierModal({ dossier, cSettings, onSave, onClose }) {
                     style={{ fontSize:9,fontFamily:_DM,border:`1px solid ${stStatus.bg}`,borderRadius:4,padding:"1px 4px",background:stStatus.bg,color:stStatus.color,cursor:"pointer",fontWeight:600 }}>
                     {subStatuses.map(ss=><option key={ss.id} value={ss.id}>{ss.name}</option>)}
                   </select>
-                  <button onClick={()=>setD(p=>({...p, subtasks:(d.subtasks||[]).filter((_,j)=>j!==i)})}
+                  <button onClick={()=>setD(p=>({...p, subtasks:(d.subtasks||[]).filter((_,j)=>j!==i)}))}
                     style={{ border:"none",background:"none",cursor:"pointer",color:"#DDD",fontSize:14,padding:0,lineHeight:1 }}>×</button>
                 </div>
               );
@@ -4583,7 +4583,7 @@ function ContentieuxDossierModal({ dossier, cSettings, onSave, onClose }) {
                       style={{ flex:1,border:"none",outline:"none",fontSize:12,background:"transparent",fontFamily:_FL,color:"#2C3E50" }} />
                     <span style={{ fontSize:9,color:"#AAA",fontFamily:_DM,flexShrink:0 }}>{att.size?Math.round(att.size/1024)+"Ko":""}</span>
                     {att.dataUrl && <a href={att.dataUrl} download={att.name} style={{ fontSize:10,color:"#4F46E5",fontFamily:_DM,textDecoration:"none",flexShrink:0 }}>↓</a>}
-                    <button onClick={()=>setD(p=>({...p, attachments:(d.attachments||[]).filter((_,j)=>j!==i)})}
+                    <button onClick={()=>setD(p=>({...p, attachments:(d.attachments||[]).filter((_,j)=>j!==i)}))}
                       style={{ border:"none",background:"none",cursor:"pointer",color:"#E8A0A0",fontSize:14,padding:0,lineHeight:1,flexShrink:0 }}>×</button>
                   </div>
                 ))}
@@ -14338,7 +14338,7 @@ function App() {
         </>}
         {/* Footer version */}
         <div style={{ marginTop: "auto", padding: "14px 18px", borderTop: "1px solid rgba(255,255,255,0.08)", fontSize: 9, fontFamily: "'DM Mono',monospace", color: "rgba(255,255,255,0.25)", lineHeight: 1.6, flexShrink: 0 }}>
-          v.0.565{" — "}{new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"})}{" "}{new Date().toLocaleTimeString("fr-FR",{timeZone:"Europe/Paris",hour:"2-digit",minute:"2-digit"})}
+          v.0.566{" — "}{new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"})}{" "}{new Date().toLocaleTimeString("fr-FR",{timeZone:"Europe/Paris",hour:"2-digit",minute:"2-digit"})}
         </div>
       </div>
 
