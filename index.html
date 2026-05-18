@@ -875,49 +875,78 @@ function CotationModal({ cotation, onSave, onClose }) {
   const updPmt   = (id,k,v) => setD(p=>({...p,paiements:(p.paiements||[]).map(r=>r.id===id?{...r,[k]:v}:r)}));
   const delPmt   = (id) => setD(p=>({...p,paiements:(p.paiements||[]).filter(r=>r.id!==id)}));
   const fmtTotal = (pmts) => { const t=(pmts||[]).reduce((a,r)=>a+(parseFloat(r.montant)||0),0); return t>0?t.toLocaleString("fr-FR",{minimumFractionDigits:0})+" €":"—"; };
-  const lbl = (t) => <div style={{ fontSize:10, fontFamily:_FL, color:"#102A63", marginBottom:4, fontWeight:700, letterSpacing:"0.06em" }}>{t}</div>;
-  const inp = { ...S.input, fontSize:10, fontFamily:_FL, padding:"5px 10px" };
+
+  const lbl = (t) => <div style={{fontSize:9,fontFamily:_FL,color:"rgba(255,255,255,0.55)",marginBottom:3,fontWeight:700,letterSpacing:"0.07em",textTransform:"uppercase"}}>{t}</div>;
+  const lblD = (t) => <div style={{fontSize:9,fontFamily:_FL,color:"#102A63",marginBottom:3,fontWeight:700,letterSpacing:"0.07em",textTransform:"uppercase"}}>{t}</div>;
+  const inp = {...S.input, fontSize:11, fontFamily:_FL, padding:"6px 10px"};
+  const Section = ({title, children}) => (
+    <div style={{marginBottom:16}}>
+      <div style={{fontSize:9,fontWeight:700,color:"#94A3B8",fontFamily:_FL,letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10,paddingBottom:6,borderBottom:"1px solid #F1F5F9"}}>{title}</div>
+      {children}
+    </div>
+  );
+
   return (
-    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.4)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center" }} onMouseDown={(e)=>{ if(e.target===e.currentTarget) e.currentTarget._mdOutside=true; }} onMouseUp={(e)=>{ if(e.target===e.currentTarget&&e.currentTarget._mdOutside){e.currentTarget._mdOutside=false;onClose();}}}>
-      <div className="tasks2-modal" style={{ background:"white", borderRadius:16, width:640, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 24px 64px rgba(0,0,0,0.18)" }}>
-        <div style={{ padding:"18px 24px 12px", borderBottom:"1px solid #F0F0F0", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-          <span style={{ fontFamily:_DM, fontSize:12, fontWeight:700, color:"#102A63", letterSpacing:"0.06em" }}>{d.id?"MODIFIER LA DEMANDE":"NOUVELLE DEMANDE"}</span>
-          <div style={{ display:"flex", gap:6, alignItems:"center" }}>
-            {d.id && <button onMouseDown={(e) => { e.preventDefault(); exportSingleCotationPDF(d); }} title="Exporter en PDF"
-              style={{ border:"1px solid #E0E0E0", background:"white", borderRadius:8, padding:"3px 8px", fontSize:14, cursor:"pointer", color:"#102A63" }}>🖨</button>}
-            <button onClick={onClose} style={{ background:"none", border:"none", fontSize:20, cursor:"pointer", color:"#999" }}>×</button>
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",backdropFilter:"blur(3px)"}}
+      onMouseDown={e=>{if(e.target===e.currentTarget) e.currentTarget._md=true;}}
+      onMouseUp={e=>{if(e.target===e.currentTarget&&e.currentTarget._md){e.currentTarget._md=false;onClose();}}}>
+      <div style={{width:"min(680px,96vw)",background:"white",borderRadius:16,overflow:"hidden",maxHeight:"92vh",display:"flex",flexDirection:"column",boxShadow:"0 32px 80px rgba(0,0,0,0.25)"}}>
+
+        {/* ── Header ── */}
+        <div style={{background:"linear-gradient(135deg,#102A63 0%,#1a3d8f 100%)",padding:"20px 24px",display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexShrink:0}}>
+          <div>
+            <div style={{fontSize:10,color:"rgba(255,255,255,0.55)",fontFamily:_FL,letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:4}}>Cotation</div>
+            <div style={{fontSize:18,fontWeight:700,color:"white",fontFamily:_FL}}>{d.id?"Modifier la demande":"Nouvelle demande"}</div>
+          </div>
+          <div style={{display:"flex",gap:8,alignItems:"center"}}>
+            {d.id && <button onMouseDown={e=>{e.preventDefault();exportSingleCotationPDF(d);}} title="Exporter en PDF"
+              style={{background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:8,padding:"5px 10px",fontSize:13,cursor:"pointer",color:"white"}}>🖨</button>}
+            <button onClick={onClose} style={{background:"rgba(255,255,255,0.15)",border:"none",color:"white",fontSize:20,cursor:"pointer",lineHeight:1,borderRadius:8,padding:"4px 9px",fontWeight:300}}>×</button>
           </div>
         </div>
-        <div className="cotation-modal-form" style={{ padding:"18px 24px", display:"flex", flexDirection:"column", gap:13 }}>
-          <div style={{ display:"flex", gap:12 }}>
-            <div style={{ flex:1 }}>{lbl("PRIORITÉ")}<select value={d.priority} onChange={e=>set("priority",e.target.value)} style={inp}>
-              {COT_PRIOS.map(p=><option key={p.id} value={p.id}>{p.label}</option>)}</select></div>
-            <div style={{ flex:1 }}>{lbl("STATUT")}<select value={d.status} onChange={e=>set("status",e.target.value)} style={inp}>
-              {COT_STATUSES.map(s=><option key={s.id} value={s.id}>{s.label}</option>)}</select></div>
-          </div>
-          <div style={{ display:"flex", gap:12 }}>
-            <div style={{ flex:2 }}>{lbl("NOM CLIENT")}<input value={d.clientName} onChange={e=>set("clientName",e.target.value)} style={inp} placeholder="Nom du client" /></div>
-            <div style={{ flex:1 }}>{lbl("CODE CLIENT")}<input value={d.clientCode} onChange={e=>set("clientCode",e.target.value)} style={inp} placeholder="Code" /></div>
-          </div>
-          <div style={{ display:"flex", gap:12 }}>
-            <div style={{ flex:1 }}>{lbl("DATE DEMANDE")}<input type="date" value={d.requestDate} onChange={e=>set("requestDate",e.target.value)} style={inp} /></div>
-            <div style={{ flex:1 }}>{lbl("DEMANDEUR")}<input value={d.requester} onChange={e=>set("requester",e.target.value)} style={inp} placeholder="Prénom" /></div>
-          </div>
-          <div style={{ display:"flex", gap:12 }}>
-            <div style={{ flex:1 }}>{lbl("ENCOURS AUTORISÉ (€)")}<input value={d.authorizedAmount} onChange={e=>set("authorizedAmount",e.target.value)} style={inp} placeholder="0" /></div>
-            <div style={{ flex:1 }}>{lbl("BESOIN (€)")}<input value={d.need} onChange={e=>set("need",e.target.value)} style={inp} placeholder="0" /></div>
-            <div style={{ flex:1 }}>{lbl("MONTANT OBTENU (€)")}<input value={d.obtainedAmount} onChange={e=>set("obtainedAmount",e.target.value)} style={inp} placeholder="0" /></div>
-          </div>
-          <div style={{ display:"flex", gap:12 }}>
-            <div style={{ flex:1 }}>{lbl("ÉTIQUETTE")}<select value={d.label} onChange={e=>set("label",e.target.value)} style={inp}>
-              {COT_LABELS.map(l=><option key={l.id} value={l.id}>{l.label}</option>)}</select></div>
-            <div style={{ flex:1 }}>{lbl("DATE CLÔTURE")}<input type="date" value={d.closeDate} onChange={e=>set("closeDate",e.target.value)} style={inp} /></div>
-          </div>
-          <div>{lbl("NOTES")}<RichTextArea value={d.notes} onChange={v=>set("notes",v)} placeholder="Notes libres…" rows={4} /></div>
-        </div>
-        <div style={{ padding:"0 24px 16px" }}>
+
+        {/* ── Corps scrollable ── */}
+        <div style={{overflowY:"auto",padding:"20px 24px",flex:1}}>
+
+          <Section title="Identification">
+            <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:10,marginBottom:10}}>
+              <div>{lblD("Nom client")}<input value={d.clientName} onChange={e=>set("clientName",e.target.value)} style={inp} placeholder="Nom du client" /></div>
+              <div>{lblD("Code client")}<input value={d.clientCode} onChange={e=>set("clientCode",e.target.value)} style={inp} placeholder="Code" /></div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+              <div>{lblD("Date demande")}<input type="date" value={d.requestDate} onChange={e=>set("requestDate",e.target.value)} style={inp} /></div>
+              <div>{lblD("Demandeur")}<input value={d.requester} onChange={e=>set("requester",e.target.value)} style={inp} placeholder="Prénom" /></div>
+            </div>
+          </Section>
+
+          <Section title="Statut & priorité">
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+              <div>{lblD("Priorité")}<select value={d.priority} onChange={e=>set("priority",e.target.value)} style={inp}>
+                {COT_PRIOS.map(p=><option key={p.id} value={p.id}>{p.label}</option>)}</select></div>
+              <div>{lblD("Statut")}<select value={d.status} onChange={e=>set("status",e.target.value)} style={inp}>
+                {COT_STATUSES.map(s=><option key={s.id} value={s.id}>{s.label}</option>)}</select></div>
+              <div>{lblD("Étiquette")}<select value={d.label} onChange={e=>set("label",e.target.value)} style={inp}>
+                {COT_LABELS.map(l=><option key={l.id} value={l.id}>{l.label}</option>)}</select></div>
+            </div>
+          </Section>
+
+          <Section title="Montants">
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:10}}>
+              <div>{lblD("Encours autorisé (€)")}<input value={d.authorizedAmount} onChange={e=>set("authorizedAmount",e.target.value)} style={inp} placeholder="0" /></div>
+              <div>{lblD("Besoin (€)")}<input value={d.need} onChange={e=>set("need",e.target.value)} style={inp} placeholder="0" /></div>
+              <div>{lblD("Montant obtenu (€)")}<input value={d.obtainedAmount} onChange={e=>set("obtainedAmount",e.target.value)} style={inp} placeholder="0" /></div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+              <div>{lblD("Date clôture")}<input type="date" value={d.closeDate} onChange={e=>set("closeDate",e.target.value)} style={inp} /></div>
+            </div>
+          </Section>
+
+          <Section title="Notes">
+            <RichTextArea value={d.notes} onChange={v=>set("notes",v)} placeholder="Notes libres…" rows={3} />
+          </Section>
+
           {/* Sous-tâches */}
-          {(() => {
+          {(()=>{
             const ss=[{id:"todo",name:"À faire",color:"#888",bg:"#F0F0F0"},{id:"inprogress",name:"En cours",color:"#1D4ED8",bg:"#DBEAFE"},{id:"waiting",name:"En attente",color:"#A16207",bg:"#FEF9C3"},{id:"blocked",name:"Bloqué",color:"#B91C1C",bg:"#FEE2E2"},{id:"done",name:"Fait",color:"#065F46",bg:"#D1FAE5"},{id:"cancelled",name:"Annulé",color:"#92400E",bg:"#F5E6DC"}];
             const subtasks=d.subtasks||[];
             const done=subtasks.filter(s=>s.completed).length;
@@ -926,39 +955,34 @@ function CotationModal({ cotation, onSave, onClose }) {
             const updSub=s=>updSubs(subtasks.map(x=>x.id===s.id?s:x));
             const delSub=id=>updSubs(subtasks.filter(x=>x.id!==id));
             return (
-              <div style={{ borderTop:"1px solid #F0F0F0", paddingTop:14, marginBottom:14 }}>
-                <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8 }}>
-                  <div style={{ fontSize:10,fontWeight:700,color:"#102A63",fontFamily:_FL,letterSpacing:"0.06em" }}>SOUS-TÂCHES</div>
-                  {subtasks.length>0&&<span style={{ fontSize:10,color:"#27AE60",fontFamily:_FL,fontWeight:600 }}>{done}/{subtasks.length}</span>}
-                </div>
-                {subtasks.map(sub=>{
-                  const st=ss.find(x=>x.id===sub.status)||ss[0];
-                  return (
-                    <div key={sub.id} style={{ display:"flex",alignItems:"center",gap:6,padding:"5px 0",borderBottom:"1px solid #F5F5F5" }}>
-                      <button onClick={()=>updSub({...sub,completed:!sub.completed,status:sub.completed?"todo":"done"})}
-                        style={{ width:16,height:16,borderRadius:"50%",flexShrink:0,border:"2px solid "+(sub.completed?"#27AE60":"#CCC"),background:sub.completed?"#27AE60":"white",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,color:"white" }}>{sub.completed?"✓":""}</button>
-                      <input value={sub.text} onChange={e=>updSub({...sub,text:e.target.value})} placeholder="Sous-tâche…"
-                        style={{ flex:1,border:"none",outline:"none",fontSize:12,fontFamily:_FL,color:sub.completed?"#AAA":"#2C3E50",textDecoration:sub.completed?"line-through":"none",background:"transparent" }} />
-                      <SubStatusSelect value={sub.status} onChange={v=>updSub({...sub,status:v,completed:v==="done"})} />
-                      <button onClick={()=>delSub(sub.id)} style={{ border:"none",background:"none",color:"#E8A0A0",cursor:"pointer",fontSize:14,padding:"0 2px",flexShrink:0 }}>×</button>
-                    </div>
-                  );
-                })}
-                <button onClick={addSub} style={{ marginTop:8,background:"none",border:"none",padding:"4px 0",fontSize:11,cursor:"pointer",fontFamily:_FL,color:"#BBBBBB",display:"flex",alignItems:"center",gap:5 }}>
-                  <span style={{ fontSize:16,lineHeight:1 }}>+</span> Ajouter une sous-tâche
+              <Section title={`Sous-tâches${subtasks.length>0?" ("+done+"/"+subtasks.length+")":""}`}>
+                {subtasks.map(sub=>(
+                  <div key={sub.id} style={{display:"flex",alignItems:"center",gap:6,padding:"5px 0",borderBottom:"1px solid #F5F5F5"}}>
+                    <button onClick={()=>updSub({...sub,completed:!sub.completed,status:sub.completed?"todo":"done"})}
+                      style={{width:16,height:16,borderRadius:"50%",flexShrink:0,border:"2px solid "+(sub.completed?"#27AE60":"#CCC"),background:sub.completed?"#27AE60":"white",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,color:"white"}}>{sub.completed?"✓":""}</button>
+                    <input value={sub.text} onChange={e=>updSub({...sub,text:e.target.value})} placeholder="Sous-tâche…"
+                      style={{flex:1,border:"none",outline:"none",fontSize:12,fontFamily:_FL,color:sub.completed?"#AAA":"#2C3E50",textDecoration:sub.completed?"line-through":"none",background:"transparent"}} />
+                    <SubStatusSelect value={sub.status} onChange={v=>updSub({...sub,status:v,completed:v==="done"})} />
+                    <button onClick={()=>delSub(sub.id)} style={{border:"none",background:"none",color:"#E8A0A0",cursor:"pointer",fontSize:14,padding:"0 2px",flexShrink:0}}>×</button>
+                  </div>
+                ))}
+                <button onClick={addSub} style={{marginTop:8,background:"none",border:"none",padding:"4px 0",fontSize:11,cursor:"pointer",fontFamily:_FL,color:"#BBBBBB",display:"flex",alignItems:"center",gap:5}}>
+                  <span style={{fontSize:16,lineHeight:1}}>+</span> Ajouter une sous-tâche
                 </button>
-              </div>
+              </Section>
             );
           })()}
-          {/* Pièces jointes */}
-          <div style={{ borderTop:"1px solid #F0F0F0", paddingTop:14, marginBottom:16 }}>
-            <div style={{ fontSize:10,fontWeight:700,color:"#102A63",fontFamily:_FL,letterSpacing:"0.06em",marginBottom:8 }}>PIÈCES JOINTES</div>
+
+          <Section title="Pièces jointes">
             <AttachmentZone attachments={d.attachments||[]} onChange={v=>setD({...d,attachments:v})} />
-          </div>
-          <div style={{ display:"flex",justifyContent:"flex-end",gap:8,paddingBottom:4 }}>
-            <button onClick={onClose} style={{ ...S.btn("#F0F0F0","#666"), fontSize:11, padding:"7px 14px" }}>Annuler</button>
-            <button onClick={()=>onSave(d)} style={{ ...S.btn("#102A63"), fontSize:11, padding:"7px 14px" }}>✓ Enregistrer</button>
-          </div>
+          </Section>
+
+        </div>
+
+        {/* ── Footer ── */}
+        <div style={{padding:"14px 24px",borderTop:"1px solid #F1F5F9",display:"flex",justifyContent:"flex-end",gap:8,flexShrink:0,background:"#FAFBFC"}}>
+          <button onClick={onClose} style={{...S.btn("#F0F0F0","#666"),padding:"8px 18px",fontSize:11}}>Annuler</button>
+          <button onClick={()=>onSave(d)} style={{...S.btn("#102A63"),padding:"8px 18px",fontSize:11}}>✓ Enregistrer</button>
         </div>
       </div>
     </div>
@@ -6627,68 +6651,60 @@ function PaymentModal({ payment, onSave, onClose, settings }) {
     const numeric = e.target.value.replace(/\s/g, "").replace(",", ".");
     setD({ ...d, amount: numeric });
   };
-  const handleAmountBlur = () => {
-    if (d.amount) setAmountDisplay(fmtAmountInput(d.amount));
-  };
+  const handleAmountBlur = () => { if (d.amount) setAmountDisplay(fmtAmountInput(d.amount)); };
 
-  const labelStyle = { fontSize: 10, fontWeight: 700, color: "#102A63", fontFamily: "'Lora',serif", letterSpacing:"0.06em" };
-  const inputStyle = { ...S.input, fontSize: 10, width: "100%", marginTop: 4 };
+  const inp = {...S.input, fontSize:11, fontFamily:_FL, padding:"6px 10px"};
+  const lblD = (t) => <div style={{fontSize:9,fontFamily:_FL,color:"#102A63",marginBottom:3,fontWeight:700,letterSpacing:"0.07em",textTransform:"uppercase"}}>{t}</div>;
+  const Section = ({title, children}) => (
+    <div style={{marginBottom:16}}>
+      <div style={{fontSize:9,fontWeight:700,color:"#94A3B8",fontFamily:_FL,letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10,paddingBottom:6,borderBottom:"1px solid #F1F5F9"}}>{title}</div>
+      {children}
+    </div>
+  );
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 3000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, backdropFilter: "blur(4px)" }}
-      onMouseDown={(e) => { if (e.target === e.currentTarget) e.currentTarget._mdOutside = true; }}
-      onMouseUp={(e) => { if (e.target === e.currentTarget && e.currentTarget._mdOutside) { e.currentTarget._mdOutside = false; onClose(); } }}>
-      <div style={{ background: "white", borderRadius: 16, width: "100%", maxWidth: 540, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.2)", borderTop: "4px solid #102A63" }}>
-        <div style={{ padding: "14px 18px", borderBottom: "1px solid #F0F0F0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "'Lora',serif", color: "#2C3E50" }}>{payment ? "Modifier le paiement" : "Nouveau paiement"}</div>
-          <button onClick={onClose} style={{ border: "none", background: "none", fontSize: 20, cursor: "pointer", color: "#BDC3C7" }}>×</button>
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",zIndex:3000,display:"flex",alignItems:"center",justifyContent:"center",backdropFilter:"blur(3px)"}}
+      onMouseDown={e=>{if(e.target===e.currentTarget) e.currentTarget._md=true;}}
+      onMouseUp={e=>{if(e.target===e.currentTarget&&e.currentTarget._md){e.currentTarget._md=false;onClose();}}}>
+      <div style={{width:"min(580px,96vw)",background:"white",borderRadius:16,overflow:"hidden",maxHeight:"92vh",display:"flex",flexDirection:"column",boxShadow:"0 32px 80px rgba(0,0,0,0.25)"}}>
+
+        <div style={{background:"linear-gradient(135deg,#102A63 0%,#1a3d8f 100%)",padding:"20px 24px",display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexShrink:0}}>
+          <div>
+            <div style={{fontSize:10,color:"rgba(255,255,255,0.55)",fontFamily:_FL,letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:4}}>Paiement</div>
+            <div style={{fontSize:18,fontWeight:700,color:"white",fontFamily:_FL}}>{payment?"Modifier le paiement":"Nouveau paiement"}</div>
+          </div>
+          <button onClick={onClose} style={{background:"rgba(255,255,255,0.15)",border:"none",color:"white",fontSize:20,cursor:"pointer",lineHeight:1,borderRadius:8,padding:"4px 9px",fontWeight:300}}>×</button>
         </div>
-        <div style={{ padding: "14px 18px", display: "flex", flexDirection: "column", gap: 10 }}>
 
-          {/* Ligne 1 : Fournisseur + Demandeur */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            <div><label style={labelStyle}>FOURNISSEUR</label><input value={d.supplier} onChange={e => setD({...d, supplier: e.target.value})} placeholder="Nom du fournisseur" className="payment-field" style={inputStyle} /></div>
-            <div><label style={labelStyle}>COMPTE</label><input value={d.account||""} onChange={e => setD({...d, account: e.target.value})} placeholder="Code bénéficiaire" className="payment-field" style={inputStyle} /></div>
-            <div><label style={labelStyle}>DEMANDEUR</label><input value={d.requester} onChange={e => setD({...d, requester: e.target.value})} placeholder="Nom du demandeur" className="payment-field" style={inputStyle} /></div>
-          </div>
-
-          {/* Ligne 2 : Dates */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            <div><label style={labelStyle}>DATE DEMANDE</label>
-              <input type="date" value={d.requestDate} onChange={e => setD({...d, requestDate: e.target.value})} onClick={e => { try { e.currentTarget.showPicker(); } catch(_) {} }} className="payment-field" style={inputStyle} /></div>
-            <div><label style={labelStyle}>DATE PAIEMENT ESTIMÉE</label>
-              <input type="date" value={d.estimatedDate} onChange={e => setD({...d, estimatedDate: e.target.value})} onClick={e => { try { e.currentTarget.showPicker(); } catch(_) {} }} className="payment-field" style={inputStyle} /></div>
-          </div>
-
-          {/* Ligne 3 : Montant + Statut + Priorité */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-            <div><label style={labelStyle}>MONTANT (€)</label>
-              <input value={amountDisplay} onChange={handleAmountChange} onBlur={handleAmountBlur} placeholder="0,00" className="payment-field" style={{ ...inputStyle, fontFamily: "'DM Mono',monospace" }} /></div>
-            <div><label style={labelStyle}>STATUT</label>
-              <select value={d.status} onChange={e => setD({...d, status: e.target.value})} className="payment-field" style={inputStyle}>
-                {PAYMENT_STATUSES.map(s => <option key={s.id} value={s.id}>{s.icon} {s.label}</option>)}
-              </select></div>
-            <div><label style={labelStyle}>PRIORITÉ</label>
-              <select value={d.priority || "normal"} onChange={e => setD({...d, priority: e.target.value})} className="payment-field" style={inputStyle}>
-                {PAYMENT_PRIORITIES.map(p => <option key={p.id} value={p.id}>{p.icon} {p.label}</option>)}
-              </select></div>
-          </div>
-
-          {/* Ligne 4 : Case Client/Fournisseur */}
-          <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 11, fontFamily: "'Lora',serif", color: "#2C3E50", userSelect: "none" }}>
-            <input type="checkbox" checked={d.isClientSupplier || false} onChange={e => setD({...d, isClientSupplier: e.target.checked})}
-              style={{ width: 14, height: 14, accentColor: "#102A63", cursor: "pointer" }} />
-            Client / Fournisseur
-          </label>
-
-          {/* Notes */}
-          <div style={{ borderTop:"1px solid #F0F0F0", paddingTop:14 }}>
-            <div style={{ fontSize:10,fontWeight:700,color:"#102A63",fontFamily:_FL,marginBottom:7,letterSpacing:"0.06em" }}>NOTES</div>
-            <RichTextArea value={d.notes || ""} onChange={v => setD({...d, notes: v})} placeholder="Notes sur ce paiement…" rows={4} />
-          </div>
-          {/* Sous-tâches */}
+        <div style={{overflowY:"auto",padding:"20px 24px",flex:1}}>
+          <Section title="Bénéficiaire">
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+              <div>{lblD("Fournisseur")}<input value={d.supplier} onChange={e=>setD({...d,supplier:e.target.value})} placeholder="Nom du fournisseur" style={inp} /></div>
+              <div>{lblD("Compte")}<input value={d.account||""} onChange={e=>setD({...d,account:e.target.value})} placeholder="Code bénéficiaire" style={inp} /></div>
+            </div>
+            <div>{lblD("Demandeur")}<input value={d.requester} onChange={e=>setD({...d,requester:e.target.value})} placeholder="Nom du demandeur" style={inp} /></div>
+            <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:11,fontFamily:_FL,color:"#2C3E50",userSelect:"none",marginTop:10}}>
+              <input type="checkbox" checked={d.isClientSupplier||false} onChange={e=>setD({...d,isClientSupplier:e.target.checked})} style={{width:14,height:14,accentColor:"#102A63",cursor:"pointer"}} />
+              Client / Fournisseur
+            </label>
+          </Section>
+          <Section title="Montant & statut">
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+              <div>{lblD("Montant (€)")}<input value={amountDisplay} onChange={handleAmountChange} onBlur={handleAmountBlur} placeholder="0,00" style={{...inp,fontFamily:_DM}} /></div>
+              <div>{lblD("Statut")}<select value={d.status} onChange={e=>setD({...d,status:e.target.value})} style={inp}>{PAYMENT_STATUSES.map(s=><option key={s.id} value={s.id}>{s.icon} {s.label}</option>)}</select></div>
+              <div>{lblD("Priorité")}<select value={d.priority||"normal"} onChange={e=>setD({...d,priority:e.target.value})} style={inp}>{PAYMENT_PRIORITIES.map(p=><option key={p.id} value={p.id}>{p.icon} {p.label}</option>)}</select></div>
+            </div>
+          </Section>
+          <Section title="Dates">
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+              <div>{lblD("Date demande")}<input type="date" value={d.requestDate} onChange={e=>setD({...d,requestDate:e.target.value})} onClick={e=>{try{e.currentTarget.showPicker();}catch(_){}}} style={inp} /></div>
+              <div>{lblD("Date estimée")}<input type="date" value={d.estimatedDate} onChange={e=>setD({...d,estimatedDate:e.target.value})} onClick={e=>{try{e.currentTarget.showPicker();}catch(_){}}} style={inp} /></div>
+            </div>
+          </Section>
+          <Section title="Notes">
+            <RichTextArea value={d.notes||""} onChange={v=>setD({...d,notes:v})} placeholder="Notes sur ce paiement…" rows={3} />
+          </Section>
           {(()=>{
-            const ss=[{id:"todo",name:"À faire",color:"#888",bg:"#F0F0F0"},{id:"inprogress",name:"En cours",color:"#1D4ED8",bg:"#DBEAFE"},{id:"waiting",name:"En attente",color:"#A16207",bg:"#FEF9C3"},{id:"blocked",name:"Bloqué",color:"#B91C1C",bg:"#FEE2E2"},{id:"done",name:"Fait",color:"#065F46",bg:"#D1FAE5"},{id:"cancelled",name:"Annulé",color:"#92400E",bg:"#F5E6DC"}];
             const subtasks=d.subtasks||[];
             const done=subtasks.filter(s=>s.completed).length;
             const updSubs=subs=>setD(p=>({...p,subtasks:subs}));
@@ -6696,33 +6712,27 @@ function PaymentModal({ payment, onSave, onClose, settings }) {
             const updSub=s=>updSubs(subtasks.map(x=>x.id===s.id?s:x));
             const delSub=id=>updSubs(subtasks.filter(x=>x.id!==id));
             return (
-              <div style={{ borderTop:"1px solid #F0F0F0", paddingTop:14, marginTop:10 }}>
-                <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8 }}>
-                  <div style={{ fontSize:10,fontWeight:700,color:"#102A63",fontFamily:_FL,letterSpacing:"0.06em" }}>SOUS-TÂCHES</div>
-                  {subtasks.length>0&&<span style={{ fontSize:10,color:"#27AE60",fontFamily:_FL,fontWeight:600 }}>{done}/{subtasks.length}</span>}
-                </div>
-                {subtasks.map(sub=>{const st=ss.find(x=>x.id===sub.status)||ss[0];return(
-                  <div key={sub.id} style={{ display:"flex",alignItems:"center",gap:6,padding:"5px 0",borderBottom:"1px solid #F5F5F5" }}>
-                    <button onClick={()=>updSub({...sub,completed:!sub.completed,status:sub.completed?"todo":"done"})} style={{ width:16,height:16,borderRadius:"50%",flexShrink:0,border:"2px solid "+(sub.completed?"#27AE60":"#CCC"),background:sub.completed?"#27AE60":"white",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,color:"white" }}>{sub.completed?"✓":""}</button>
-                    <input value={sub.text} onChange={e=>updSub({...sub,text:e.target.value})} placeholder="Sous-tâche…" style={{ flex:1,border:"none",outline:"none",fontSize:12,fontFamily:_FL,color:sub.completed?"#AAA":"#2C3E50",textDecoration:sub.completed?"line-through":"none",background:"transparent" }} />
+              <Section title={"Sous-tâches"+(subtasks.length>0?" ("+done+"/"+subtasks.length+")":"")}>
+                {subtasks.map(sub=>(
+                  <div key={sub.id} style={{display:"flex",alignItems:"center",gap:6,padding:"5px 0",borderBottom:"1px solid #F5F5F5"}}>
+                    <button onClick={()=>updSub({...sub,completed:!sub.completed,status:sub.completed?"todo":"done"})} style={{width:16,height:16,borderRadius:"50%",flexShrink:0,border:"2px solid "+(sub.completed?"#27AE60":"#CCC"),background:sub.completed?"#27AE60":"white",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,color:"white"}}>{sub.completed?"✓":""}</button>
+                    <input value={sub.text} onChange={e=>updSub({...sub,text:e.target.value})} placeholder="Sous-tâche…" style={{flex:1,border:"none",outline:"none",fontSize:12,fontFamily:_FL,color:sub.completed?"#AAA":"#2C3E50",textDecoration:sub.completed?"line-through":"none",background:"transparent"}} />
                     <SubStatusSelect value={sub.status} onChange={v=>updSub({...sub,status:v,completed:v==="done"})} />
-                    <button onClick={()=>delSub(sub.id)} style={{ border:"none",background:"none",color:"#E8A0A0",cursor:"pointer",fontSize:14,padding:"0 2px",flexShrink:0 }}>×</button>
+                    <button onClick={()=>delSub(sub.id)} style={{border:"none",background:"none",color:"#E8A0A0",cursor:"pointer",fontSize:14,padding:"0 2px",flexShrink:0}}>×</button>
                   </div>
-                );})}
-                <button onClick={addSub} style={{ marginTop:8,background:"none",border:"none",padding:"4px 0",fontSize:11,cursor:"pointer",fontFamily:_FL,color:"#BBBBBB",display:"flex",alignItems:"center",gap:5 }}><span style={{ fontSize:16,lineHeight:1 }}>+</span> Ajouter une sous-tâche</button>
-              </div>
+                ))}
+                <button onClick={addSub} style={{marginTop:8,background:"none",border:"none",padding:"4px 0",fontSize:11,cursor:"pointer",fontFamily:_FL,color:"#BBBBBB",display:"flex",alignItems:"center",gap:5}}><span style={{fontSize:16,lineHeight:1}}>+</span> Ajouter une sous-tâche</button>
+              </Section>
             );
           })()}
+          <Section title="Pièces jointes">
+            <AttachmentZone attachments={d.attachments} onChange={v=>setD({...d,attachments:v})} />
+          </Section>
         </div>
-        <div style={{ padding:"0 18px" }}>
-          <div style={{ borderTop:"1px solid #F0F0F0", paddingTop:14, marginBottom:14 }}>
-            <div style={{ fontSize:10,fontWeight:700,color:"#102A63",fontFamily:_FL,letterSpacing:"0.06em",marginBottom:8 }}>PIÈCES JOINTES</div>
-            <AttachmentZone attachments={d.attachments} onChange={v => setD({ ...d, attachments: v })} />
-          </div>
-        </div>
-        <div style={{ padding: "12px 18px", borderTop: "1px solid #F0F0F0", display: "flex", justifyContent: "flex-end", gap: 8 }}>
-          <button onClick={onClose} style={{ ...S.btn("#F0F0F0", "#666"), padding: "6px 14px", fontSize: 10 }}>Annuler</button>
-          <button onClick={() => { if (d.supplier) { onSave(d); onClose(); } }} style={{ ...S.btn("#102A63"), padding: "6px 14px", fontSize: 10 }}>✓ Enregistrer</button>
+
+        <div style={{padding:"14px 24px",borderTop:"1px solid #F1F5F9",display:"flex",justifyContent:"flex-end",gap:8,flexShrink:0,background:"#FAFBFC"}}>
+          <button onClick={onClose} style={{...S.btn("#F0F0F0","#666"),padding:"8px 18px",fontSize:11}}>Annuler</button>
+          <button onClick={()=>{if(d.supplier){onSave(d);onClose();}}} style={{...S.btn("#102A63"),padding:"8px 18px",fontSize:11}}>✓ Enregistrer</button>
         </div>
       </div>
     </div>
@@ -14574,7 +14584,7 @@ function App() {
         </>}
         {/* Footer version */}
         <div style={{ marginTop: "auto", padding: "14px 18px", borderTop: "1px solid rgba(255,255,255,0.08)", fontSize: 9, fontFamily: "'DM Mono',monospace", color: "rgba(255,255,255,0.25)", lineHeight: 1.6, flexShrink: 0 }}>
-          v.0.541<br />16/05/26 à 10:00
+          v.0.542<br />16/05/26 à 10:00
         </div>
       </div>
 
