@@ -443,6 +443,15 @@ window.parseCSVEcheancier  = parseCSVEcheancier;
 const _FL="'Lora',serif";
 const _DM="'DM Mono',monospace";
 
+function ModalSection({title, children}) {
+  return (
+    <div style={{marginBottom:16}}>
+      <div style={{fontSize:9,fontWeight:700,color:"#94A3B8",fontFamily:_FL,letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10,paddingBottom:6,borderBottom:"1px solid #F1F5F9"}}>{title}</div>
+      {children}
+    </div>
+  );
+}
+
 function CotationForm1779117410({ cotation, onSave, onClose }) {
   console.log("CotationForm v558 CALLED", cotation?.id || "new");
   const today0 = new Date().toISOString().split("T")[0];
@@ -491,7 +500,7 @@ function CotationForm1779117410({ cotation, onSave, onClose }) {
         {/* ── Corps scrollable ── */}
         <div style={{overflowY:"auto",padding:"20px 24px",flex:1}}>
 
-          <CotSection title="Identification">
+          <ModalSection title="Identification">
             <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:10,marginBottom:10}}>
               <div>{lblD("Nom client")}<input value={d.clientName} onChange={e=>set("clientName",e.target.value)} style={inp} placeholder="Nom du client" /></div>
               <div>{lblD("Code client")}<input value={d.clientCode} onChange={e=>set("clientCode",e.target.value)} style={inp} placeholder="Code" /></div>
@@ -500,9 +509,9 @@ function CotationForm1779117410({ cotation, onSave, onClose }) {
               <div>{lblD("Date demande")}<input type="date" value={d.requestDate} onChange={e=>set("requestDate",e.target.value)} style={inp} /></div>
               <div>{lblD("Demandeur")}<input value={d.requester} onChange={e=>set("requester",e.target.value)} style={inp} placeholder="Prénom" /></div>
             </div>
-          </CotSection>
+          </ModalSection>
 
-          <CotSection title="Statut & priorité">
+          <ModalSection title="Statut & priorité">
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
               <div>{lblD("Priorité")}<select value={d.priority} onChange={e=>set("priority",e.target.value)} style={inp}>
                 {COT_PRIOS.map(p=><option key={p.id} value={p.id}>{p.label}</option>)}</select></div>
@@ -511,9 +520,9 @@ function CotationForm1779117410({ cotation, onSave, onClose }) {
               <div>{lblD("Étiquette")}<select value={d.label} onChange={e=>set("label",e.target.value)} style={inp}>
                 {COT_LABELS.map(l=><option key={l.id} value={l.id}>{l.label}</option>)}</select></div>
             </div>
-          </CotSection>
+          </ModalSection>
 
-          <CotSection title="Montants">
+          <ModalSection title="Montants">
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:10}}>
               <div>{lblD("Encours autorisé (€)")}<input value={d.authorizedAmount} onChange={e=>set("authorizedAmount",e.target.value)} style={inp} placeholder="0" /></div>
               <div>{lblD("Besoin (€)")}<input value={d.need} onChange={e=>set("need",e.target.value)} style={inp} placeholder="0" /></div>
@@ -522,11 +531,11 @@ function CotationForm1779117410({ cotation, onSave, onClose }) {
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
               <div>{lblD("Date clôture")}<input type="date" value={d.closeDate} onChange={e=>set("closeDate",e.target.value)} style={inp} /></div>
             </div>
-          </CotSection>
+          </ModalSection>
 
-          <CotSection title="Notes">
+          <ModalSection title="Notes">
             <RichTextArea value={d.notes} onChange={v=>set("notes",v)} placeholder="Notes libres…" rows={3} />
-          </CotSection>
+          </ModalSection>
 
           {/* Sous-tâches */}
           {(()=>{
@@ -538,7 +547,7 @@ function CotationForm1779117410({ cotation, onSave, onClose }) {
             const updSub=s=>updSubs(subtasks.map(x=>x.id===s.id?s:x));
             const delSub=id=>updSubs(subtasks.filter(x=>x.id!==id));
             return (
-              <CotSection title={`Sous-tâches${subtasks.length>0?" ("+done+"/"+subtasks.length+")":""}`}>
+              <ModalSection title={`Sous-tâches${subtasks.length>0?" ("+done+"/"+subtasks.length+")":""}`}>
                 {subtasks.map(sub=>(
                   <div key={sub.id} style={{display:"flex",alignItems:"center",gap:6,padding:"5px 0",borderBottom:"1px solid #F5F5F5"}}>
                     <button onClick={()=>updSub({...sub,completed:!sub.completed,status:sub.completed?"todo":"done"})}
@@ -552,13 +561,13 @@ function CotationForm1779117410({ cotation, onSave, onClose }) {
                 <button onClick={addSub} style={{marginTop:8,background:"none",border:"none",padding:"4px 0",fontSize:11,cursor:"pointer",fontFamily:_FL,color:"#BBBBBB",display:"flex",alignItems:"center",gap:5}}>
                   <span style={{fontSize:16,lineHeight:1}}>+</span> Ajouter une sous-tâche
                 </button>
-              </CotSection>
+              </ModalSection>
             );
           })()}
 
-          <CotSection title="Pièces jointes">
+          <ModalSection title="Pièces jointes">
             <AttachmentZone attachments={d.attachments||[]} onChange={v=>setD(p=>({...p, attachments:v}))} />
-          </CotSection>
+          </ModalSection>
 
         </div>
 
@@ -6201,7 +6210,7 @@ function ReportModal({ report, onSave, onClose }) {
 
         <div style={{overflowY:"auto",padding:"20px 24px",flex:1,display:"grid",gridTemplateColumns:"1fr 1fr",gap:24}}>
           <div>
-            <RepSection title="Informations">
+            <ModalSection title="Informations">
               <div style={{marginBottom:10}}>
                 {lblD("Titre")}<input value={d.name||""} onChange={e=>setD(p=>({...p,name:e.target.value}))} placeholder="Titre du reporting" style={inp} autoFocus />
               </div>
@@ -6217,13 +6226,13 @@ function ReportModal({ report, onSave, onClose }) {
                 <div>{lblD("Date création")}<input type="date" value={d.createdAt||""} onChange={e=>setD(p=>({...p,createdAt:e.target.value}))} style={inp} /></div>
                 <div>{lblD("Date publication")}<input type="date" value={d.publishedAt||""} onChange={e=>setD(p=>({...p,publishedAt:e.target.value}))} style={inp} /></div>
               </div>
-            </RepSection>
-            <RepSection title="Notes">
+            </ModalSection>
+            <ModalSection title="Notes">
               <RichTextArea value={d.notes||""} onChange={v=>setD(p=>({...p,notes:v}))} placeholder="Commentaires…" rows={4} />
-            </RepSection>
+            </ModalSection>
           </div>
           <div>
-            <RepSection title={"Tâches ("+((d.tasks||[]).length)+")"}>
+            <ModalSection title={"Tâches ("+((d.tasks||[]).length)+")"}>
               {(d.tasks||[]).length>0 ? (
                 <div style={{display:"flex",flexDirection:"column",gap:4,maxHeight:380,overflowY:"auto",marginBottom:8}}>
                   {(d.tasks||[]).map(t=>(
@@ -6244,7 +6253,7 @@ function ReportModal({ report, onSave, onClose }) {
                 </div>
               )}
               <button onClick={addTask} style={{...S.ghost,fontSize:11,width:"100%"}}>+ Nouvelle tâche</button>
-            </RepSection>
+            </ModalSection>
           </div>
         </div>
 
@@ -6579,7 +6588,7 @@ function PaymentModal({ payment, onSave, onClose, settings }) {
         </div>
 
         <div style={{overflowY:"auto",padding:"20px 24px",flex:1}}>
-          <Section title="Bénéficiaire">
+          <ModalSection title="Bénéficiaire">
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
               <div>{lblD("Fournisseur")}<input value={d.supplier} onChange={e=>setD(p=>({...p, supplier:e.target.value}))} placeholder="Nom du fournisseur" style={inp} /></div>
               <div>{lblD("Compte")}<input value={d.account||""} onChange={e=>setD(p=>({...p, account:e.target.value}))} placeholder="Code bénéficiaire" style={inp} /></div>
@@ -6589,23 +6598,23 @@ function PaymentModal({ payment, onSave, onClose, settings }) {
               <input type="checkbox" checked={d.isClientSupplier||false} onChange={e=>setD(p=>({...p, isClientSupplier:e.target.checked}))} style={{width:14,height:14,accentColor:"#102A63",cursor:"pointer"}} />
               Client / Fournisseur
             </label>
-          </Section>
-          <Section title="Montant & statut">
+          </ModalSection>
+          <ModalSection title="Montant & statut">
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
               <div>{lblD("Montant (€)")}<input value={amountDisplay} onChange={handleAmountChange} onBlur={handleAmountBlur} placeholder="0,00" style={{...inp,fontFamily:_DM}} /></div>
               <div>{lblD("Statut")}<select value={d.status} onChange={e=>setD(p=>({...p, status:e.target.value}))} style={inp}>{PAYMENT_STATUSES.map(s=><option key={s.id} value={s.id}>{s.icon} {s.label}</option>)}</select></div>
               <div>{lblD("Priorité")}<select value={d.priority||"normal"} onChange={e=>setD(p=>({...p, priority:e.target.value}))} style={inp}>{PAYMENT_PRIORITIES.map(p=><option key={p.id} value={p.id}>{p.icon} {p.label}</option>)}</select></div>
             </div>
-          </Section>
-          <Section title="Dates">
+          </ModalSection>
+          <ModalSection title="Dates">
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
               <div>{lblD("Date demande")}<input type="date" value={d.requestDate} onChange={e=>setD(p=>({...p, requestDate:e.target.value}))} onClick={e=>{try{e.currentTarget.showPicker();}catch(_){}}} style={inp} /></div>
               <div>{lblD("Date estimée")}<input type="date" value={d.estimatedDate} onChange={e=>setD(p=>({...p, estimatedDate:e.target.value}))} onClick={e=>{try{e.currentTarget.showPicker();}catch(_){}}} style={inp} /></div>
             </div>
-          </Section>
-          <Section title="Notes">
+          </ModalSection>
+          <ModalSection title="Notes">
             <RichTextArea value={d.notes||""} onChange={v=>setD(p=>({...p, notes:v}))} placeholder="Notes sur ce paiement…" rows={3} />
-          </Section>
+          </ModalSection>
           {(()=>{
             const subtasks=d.subtasks||[];
             const done=subtasks.filter(s=>s.completed).length;
@@ -6614,7 +6623,7 @@ function PaymentModal({ payment, onSave, onClose, settings }) {
             const updSub=s=>updSubs(subtasks.map(x=>x.id===s.id?s:x));
             const delSub=id=>updSubs(subtasks.filter(x=>x.id!==id));
             return (
-              <Section title={"Sous-tâches"+(subtasks.length>0?" ("+done+"/"+subtasks.length+")":"")}>
+              <ModalSection title={"Sous-tâches"+(subtasks.length>0?" ("+done+"/"+subtasks.length+")":"")}>
                 {subtasks.map(sub=>(
                   <div key={sub.id} style={{display:"flex",alignItems:"center",gap:6,padding:"5px 0",borderBottom:"1px solid #F5F5F5"}}>
                     <button onClick={()=>updSub({...sub,completed:!sub.completed,status:sub.completed?"todo":"done"})} style={{width:16,height:16,borderRadius:"50%",flexShrink:0,border:"2px solid "+(sub.completed?"#27AE60":"#CCC"),background:sub.completed?"#27AE60":"white",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,color:"white"}}>{sub.completed?"✓":""}</button>
@@ -6624,12 +6633,12 @@ function PaymentModal({ payment, onSave, onClose, settings }) {
                   </div>
                 ))}
                 <button onClick={addSub} style={{marginTop:8,background:"none",border:"none",padding:"4px 0",fontSize:11,cursor:"pointer",fontFamily:_FL,color:"#BBBBBB",display:"flex",alignItems:"center",gap:5}}><span style={{fontSize:16,lineHeight:1}}>+</span> Ajouter une sous-tâche</button>
-              </Section>
+              </ModalSection>
             );
           })()}
-          <Section title="Pièces jointes">
+          <ModalSection title="Pièces jointes">
             <AttachmentZone attachments={d.attachments} onChange={v=>setD(p=>({...p, attachments:v}))} />
-          </Section>
+          </ModalSection>
         </div>
 
         <div style={{padding:"14px 24px",borderTop:"1px solid #F1F5F9",display:"flex",justifyContent:"flex-end",gap:8,flexShrink:0,background:"#FAFBFC"}}>
@@ -12860,7 +12869,7 @@ function SuiviClientModal({ item, onSave, onClose, suiviTypes }) {
         </div>
 
         <div style={{overflowY:"auto",padding:"20px 24px",flex:1}}>
-          <SuiSection title="Identification">
+          <ModalSection title="Identification">
             <div style={{marginBottom:10}}>
               {lblD("Nom du client")}<input value={d.clientName} onChange={e=>set("clientName",e.target.value)} placeholder="Nom complet" style={inp} autoFocus />
             </div>
@@ -12871,22 +12880,22 @@ function SuiviClientModal({ item, onSave, onClose, suiviTypes }) {
                 {(suiviTypes||[]).map(t=><option key={t.id||t} value={t.id||t}>{t.name||t}</option>)}
               </select></div>
             </div>
-          </SuiSection>
+          </ModalSection>
 
-          <SuiSection title="Dates">
+          <ModalSection title="Dates">
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
               <div>{lblD("Date de suivi")}<input type="date" value={d.followupDate||""} onChange={e=>set("followupDate",e.target.value)} style={inp} /></div>
               <div>{lblD("Date de rappel")}<input type="date" value={d.reminderDate||""} onChange={e=>set("reminderDate",e.target.value)} style={inp} /></div>
             </div>
-          </SuiSection>
+          </ModalSection>
 
-          <SuiSection title="Description">
+          <ModalSection title="Description">
             <RichTextArea value={d.description||""} onChange={v=>set("description",v)} placeholder="Description du suivi…" rows={4} />
-          </SuiSection>
+          </ModalSection>
 
-          <SuiSection title="Pièces jointes">
+          <ModalSection title="Pièces jointes">
             <AttachmentZone attachments={d.attachments||[]} onChange={v=>set("attachments",v)} />
-          </SuiSection>
+          </ModalSection>
 
           <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:11,fontFamily:_FL,color:"#2C3E50",userSelect:"none",marginBottom:8}}>
             <input type="checkbox" checked={d.closed||false} onChange={e=>set("closed",e.target.checked)} style={{width:14,height:14,accentColor:"#102A63"}} />
@@ -14338,7 +14347,7 @@ function App() {
         </>}
         {/* Footer version */}
         <div style={{ marginTop: "auto", padding: "14px 18px", borderTop: "1px solid rgba(255,255,255,0.08)", fontSize: 9, fontFamily: "'DM Mono',monospace", color: "rgba(255,255,255,0.25)", lineHeight: 1.6, flexShrink: 0 }}>
-          v.0.568{" — "}{new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"})}{" "}{new Date().toLocaleTimeString("fr-FR",{timeZone:"Europe/Paris",hour:"2-digit",minute:"2-digit"})}
+          v.0.569{" — "}{new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"})}{" "}{new Date().toLocaleTimeString("fr-FR",{timeZone:"Europe/Paris",hour:"2-digit",minute:"2-digit"})}
         </div>
       </div>
 
